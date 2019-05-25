@@ -23,6 +23,6 @@
 /build
 
 #
-**/devicestypes/**/*
+**/devicestypes/**/*.*
 !**/devicestypes/**/.gitignore
 !**/devicestypes/**/*.groovy
