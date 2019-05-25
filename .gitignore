@@ -21,3 +21,8 @@
 
 # Build files
 /build
+
+#
+devicestypes/*
+!devicestypes/*.gitignore
+!devicestypes/*.groovy
