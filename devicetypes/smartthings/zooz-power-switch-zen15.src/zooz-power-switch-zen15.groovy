@@ -56,7 +56,7 @@
  
 metadata {
 	definition (
-		name: "Zooz Power Switch", 
+		name: "Zooz Power Switch ZEN15", 
 		namespace: "krlaframboise", 
 		author: "Kevin LaFramboise", 
 		ocfDeviceType: "oic.d.switch",
