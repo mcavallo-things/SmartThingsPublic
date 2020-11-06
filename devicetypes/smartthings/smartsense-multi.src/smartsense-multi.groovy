@@ -21,9 +21,7 @@ metadata {
 		capability "Sensor"
 		capability "Battery"
 
-		fingerprint profileId: "FC01", deviceId: "0139"
-
-		attribute "status", "string"
+		fingerprint profileId: "FC01", deviceId: "0139", deviceJoinName: "Multipurpose Sensor"
 	}
 
 	simulator {
@@ -45,8 +43,7 @@ metadata {
 	}
 
 	preferences {
-		input title: "Temperature Offset", description: "This feature allows you to correct any temperature variations by selecting an offset. Ex: If your sensor consistently reports a temp that's 5 degrees too warm, you'd enter \"-5\". If 3 degrees too cold, enter \"+3\".", displayDuringSetup: false, type: "paragraph", element: "paragraph"
-		input "tempOffset", "number", title: "Degrees", description: "Adjust temperature by this many degrees", range: "*..*", displayDuringSetup: false
+		input "tempOffset", "number", title: "Temperature offset", description: "Select how many degrees to adjust the temperature.", range: "-100..100", displayDuringSetup: false
 	}
 
 	tiles(scale: 2) {
@@ -113,17 +110,6 @@ private List parseSingleMessage(description) {
 	def results = []
 	results << createEvent(
 		name: "contact",
-		value: value,
-		unit: null,
-		linkText: linkText,
-		descriptionText: descriptionText,
-		handlerName: handlerName,
-		isStateChange: isStateChange,
-		displayed: displayed(description, isStateChange)
-	)
-
-	results << createEvent(
-		name: "status",
 		value: value,
 		unit: null,
 		linkText: linkText,
@@ -298,19 +284,7 @@ private List getContactResult(part, description) {
 			linkText: linkText,
 			descriptionText: descriptionText,
 			handlerName: handlerName,
-			isStateChange: isStateChange,
-			displayed:false
-	)
-
-	results << createEvent(
-			name: "status",
-			value: value,
-			unit: null,
-			linkText: linkText,
-			descriptionText: descriptionText,
-			handlerName: handlerName,
-			isStateChange: isStateChange,
-			displayed: displayed(description, isStateChange)
+			isStateChange: isStateChange
 	)
 
 	results
@@ -340,9 +314,7 @@ private Map getTempResult(part, description) {
 	def temperatureScale = getTemperatureScale()
 	def value = zigbee.parseSmartThingsTemperatureValue(part, "temp: ", temperatureScale)
 	if (tempOffset) {
-		def offset = tempOffset as int
-		def v = value as int
-		value = v + offset
+		value = new BigDecimal((value as float) + (tempOffset as float)).setScale(1, BigDecimal.ROUND_HALF_UP)
 	}
 	def linkText = getLinkText(device)
 	def descriptionText = "$linkText was $value°$temperatureScale"
